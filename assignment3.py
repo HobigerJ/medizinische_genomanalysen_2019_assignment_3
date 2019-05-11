@@ -2,7 +2,7 @@
 
 import vcf
 
-__author__ = 'XXX'
+__author__ = 'Johanna Hobiger'
 
 
 ##
@@ -35,6 +35,7 @@ class Assignment3:
         '''    
         print("TODO")
         
+        # standardmäßig wird hg19 verwendet, für hg38: &hg38=true
         
         ##
         ## Example code for 1 variant
