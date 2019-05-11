@@ -1,5 +1,8 @@
 # Medizinische Genomanalysen 2019 - Assignment 3
 
+## News
+* Deadline: 20.05.2019
+
 ## Overview
 * Fork and clone the repository
 * Complete the python program, based on the template, to calculate various properties
