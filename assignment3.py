@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 
 import vcf
+import httplib2
 
 __author__ = 'Johanna Hobiger'
 
@@ -24,7 +25,7 @@ class Assignment3:
         print("PyVCF version: %s" % vcf.VERSION)
         
         ## Call annotate_vcf_file here
-        
+        self.vcf_path = ""  # TODO
 
     def annotate_vcf_file(self):
         '''
@@ -38,15 +39,30 @@ class Assignment3:
         # standardmäßig wird hg19 verwendet, für hg38: &hg38=true
         
         ##
-        ## Example code for 1 variant
+        ## Example loop
         ##
-        import httplib2
+        
+        ## Build the connection
         h = httplib2.Http()
         headers = {'content-type': 'application/x-www-form-urlencoded'}
-        params = 'ids=chr16:g.28883241A>G,chr1:g.35367G>A'
-        res, con = h.request('http://myvariant.info/v1/variant', 'POST', params, headers=headers)
+                
+        params_pos = []  # List of variant positions
+        with open(self.vcf_path) as my_vcf_fh:
+            vcf_reader = vcf.Reader(my_vcf_fh)
+            for counter, record in enumerate(vcf_reader):
+                params_pos.append(record.CHROM + ":g." + str(record.POS) + record.REF + ">" + str(record.ALT[0]))
+                
+                if counter >= 899:
+                    break
         
-        ## Use .decode('utf-8') on con object
+        ## Build the parameters using the list we just built
+        params = 'ids=' + ",".join(params_pos) + '&hg38=true'
+        
+        ## Perform annotation
+        res, con = h.request('http://myvariant.info/v1/variant', 'POST', params, headers=headers)
+        annotation_result = con.decode('utf-8')
+        
+        ## TODO now do something with the 'annotation_result'
         
         ##
         ## End example code
@@ -99,6 +115,7 @@ class Assignment3:
             
     
     def print_summary(self):
+        self.annotate_vcf_file()
         print("Print all results here")
     
     
