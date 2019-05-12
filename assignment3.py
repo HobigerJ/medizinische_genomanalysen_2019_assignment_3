@@ -53,7 +53,7 @@ class Assignment3:
                 
                 if counter >= 899:
                     break
-        
+# 24 gefunden!
         ## Build the parameters using the list we just built
         params = 'ids=' + ",".join(params_pos) + '&hg38=true'
         
@@ -102,15 +102,17 @@ class Assignment3:
     
     def get_num_variants_modifier(self, jsonobject):
         '''
-        Print the number of variants with putative_impact "MODIFIER"
+        Print the number of variants with putative_impact "MODIFIER" 
         :return:
         '''
         counter = 0
         for object in jsonobject:
             if 'snpeff' in object:
-                if 'putative_impact' in object['snpeff']['ann']:
+                #if 'putative_impact' in object['snpeff']['ann']:
+                key, value = "putative_impact", "MODIFIER"
+                if key in object['snpeff']['ann'] and value == object['snpeff']['ann']['putative_impact']:
                     counter += 1
-        print("Number of variants with putative impact 'Modifier': ", counter)
+        print("Number of variants with putative impact 'Modifier': ", counter)  
         
     
     def get_num_variants_with_mutationtaster_annotation(self, jsonobject):
@@ -127,12 +129,20 @@ class Assignment3:
         print("Number of variants with a 'mutationtaster' annotation: ", counter)
         
     
-    def get_num_variants_non_synonymous(self):
+    def get_num_variants_non_synonymous(self, jsonobject):
         '''
         Print the number of variants with 'consequence' 'NON_SYNONYMOUS'
         :return:
         '''
-        print("TODO")
+
+        counter = 0
+        for object in jsonobject:
+            if 'cadd' in object:
+                #if 'putative_impact' in object['snpeff']['ann']:
+                key, value = "consequence", "NON_SYNONYMOUS"
+                if key in object['cadd'] and value == object['cadd']['consequence']:
+                    counter += 1
+        print("Number of variants with consequence 'NON_SYNONYMOUS': ", counter)  
         
     
     def view_vcf_in_browser(self):
@@ -148,10 +158,12 @@ class Assignment3:
     
     def print_summary(self):
         data_structure = self.annotate_vcf_file()
-        self.get_list_of_genes(data_structure)
-        self.get_num_variants_modifier(data_structure) # nur 6, kann das sein?
-        self.get_num_variants_with_mutationtaster_annotation(data_structure)
-        print("Print all results here")
+        #print(data_structure)
+        #self.get_list_of_genes(data_structure) # 7 
+        #self.get_num_variants_modifier(data_structure) # 4
+        #self.get_num_variants_with_mutationtaster_annotation(data_structure) # 5
+        self.get_num_variants_non_synonymous(data_structure)
+        #print("Print all results here")
     
     
 def main():
