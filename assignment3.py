@@ -2,6 +2,7 @@
 
 import vcf
 import httplib2
+import json
 
 __author__ = 'Johanna Hobiger'
 
@@ -25,7 +26,7 @@ class Assignment3:
         print("PyVCF version: %s" % vcf.VERSION)
         
         ## Call annotate_vcf_file here
-        self.vcf_path = ""  # TODO
+        self.vcf_path = "chr16.vcf"  # TODO
 
     def annotate_vcf_file(self):
         '''
@@ -34,9 +35,7 @@ class Assignment3:
         - Store the result in a data structure
         :return:
         '''    
-        print("TODO")
-        
-        # standardmäßig wird hg19 verwendet, für hg38: &hg38=true
+        print("Annotating VCF file")
         
         ##
         ## Example loop
@@ -61,38 +60,71 @@ class Assignment3:
         ## Perform annotation
         res, con = h.request('http://myvariant.info/v1/variant', 'POST', params, headers=headers)
         annotation_result = con.decode('utf-8')
+        #print(annotation_result)
+        jsonobject = json.loads(annotation_result)
+        return jsonobject
+
+        #for i in range(198,199):
+            #print(jsonobject[i])
+            #for monitor in jsonobject['query']:
+            #   print(monitor)
+        #for object in jsonobject:
+         #   if 'cadd' in object:
+          #      if 'genename' in object['cadd']['gene']:
+           #         print(object['cadd']['gene']['genename'])
+                #for cadd in object['cadd']:
+                #    if 'gene' in cadd:
+                #        for gene in cadd['gene']:
+                #            print(gene['genename'])
+
+
+
+                #print(cadd)
+                #for gene in cadd['gene']:
+                #    print(gene)    
         
-        ## TODO now do something with the 'annotation_result'
         
-        ##
-        ## End example code
-        ##
-        
-        return None  ## return the data structure here
     
     
-    def get_list_of_genes(self):
+    def get_list_of_genes(self, jsonobject):
         '''
         Print the name of genes in the annotation data set
         :return:
         '''
-        print("TODO")
+        genenames = set()
+        for object in jsonobject:
+            if 'cadd' in object:
+                if 'genename' in object['cadd']['gene']:
+                    genenames.add(object['cadd']['gene']['genename'])
+                    
+        print("Genenames: ", genenames)
     
     
-    def get_num_variants_modifier(self):
+    def get_num_variants_modifier(self, jsonobject):
         '''
         Print the number of variants with putative_impact "MODIFIER"
         :return:
         '''
-        print("TODO")
+        counter = 0
+        for object in jsonobject:
+            if 'snpeff' in object:
+                if 'putative_impact' in object['snpeff']['ann']:
+                    counter += 1
+        print("Number of variants with putative impact 'Modifier': ", counter)
         
     
-    def get_num_variants_with_mutationtaster_annotation(self):
+    def get_num_variants_with_mutationtaster_annotation(self, jsonobject):
         '''
         Print the number of variants with a 'mutationtaster' annotation
         :return:
         '''
-        print("TODO")
+
+        counter = 0
+        for object in jsonobject:
+            if 'dbnsfp' in object:
+                if 'mutationtaster' in object['dbnsfp']: #['ann']:
+                    counter += 1
+        print("Number of variants with a 'mutationtaster' annotation: ", counter)
         
     
     def get_num_variants_non_synonymous(self):
@@ -115,7 +147,10 @@ class Assignment3:
             
     
     def print_summary(self):
-        self.annotate_vcf_file()
+        data_structure = self.annotate_vcf_file()
+        self.get_list_of_genes(data_structure)
+        self.get_num_variants_modifier(data_structure) # nur 6, kann das sein?
+        self.get_num_variants_with_mutationtaster_annotation(data_structure)
         print("Print all results here")
     
     
