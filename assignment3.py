@@ -35,7 +35,7 @@ class Assignment3:
         - Store the result in a data structure
         :return:
         '''    
-        print("Annotating VCF file")
+        print("Annotating VCF file...")
         
         ##
         ## Example loop
@@ -60,29 +60,8 @@ class Assignment3:
         ## Perform annotation
         res, con = h.request('http://myvariant.info/v1/variant', 'POST', params, headers=headers)
         annotation_result = con.decode('utf-8')
-        #print(annotation_result)
         jsonobject = json.loads(annotation_result)
         return jsonobject
-
-        #for i in range(198,199):
-            #print(jsonobject[i])
-            #for monitor in jsonobject['query']:
-            #   print(monitor)
-        #for object in jsonobject:
-         #   if 'cadd' in object:
-          #      if 'genename' in object['cadd']['gene']:
-           #         print(object['cadd']['gene']['genename'])
-                #for cadd in object['cadd']:
-                #    if 'gene' in cadd:
-                #        for gene in cadd['gene']:
-                #            print(gene['genename'])
-
-
-
-                #print(cadd)
-                #for gene in cadd['gene']:
-                #    print(gene)    
-        
         
     
     
@@ -108,7 +87,6 @@ class Assignment3:
         counter = 0
         for object in jsonobject:
             if 'snpeff' in object:
-                #if 'putative_impact' in object['snpeff']['ann']:
                 key, value = "putative_impact", "MODIFIER"
                 if key in object['snpeff']['ann'] and value == object['snpeff']['ann']['putative_impact']:
                     counter += 1
@@ -124,7 +102,7 @@ class Assignment3:
         counter = 0
         for object in jsonobject:
             if 'dbnsfp' in object:
-                if 'mutationtaster' in object['dbnsfp']: #['ann']:
+                if 'mutationtaster' in object['dbnsfp']:
                     counter += 1
         print("Number of variants with a 'mutationtaster' annotation: ", counter)
         
@@ -138,7 +116,6 @@ class Assignment3:
         counter = 0
         for object in jsonobject:
             if 'cadd' in object:
-                #if 'putative_impact' in object['snpeff']['ann']:
                 key, value = "consequence", "NON_SYNONYMOUS"
                 if key in object['cadd'] and value == object['cadd']['consequence']:
                     counter += 1
@@ -158,11 +135,10 @@ class Assignment3:
     
     def print_summary(self):
         data_structure = self.annotate_vcf_file()
-        #print(data_structure)
-        #self.get_list_of_genes(data_structure) # 7 
-        #self.get_num_variants_modifier(data_structure) # 4
-        #self.get_num_variants_with_mutationtaster_annotation(data_structure) # 5
-        self.get_num_variants_non_synonymous(data_structure)
+        self.get_list_of_genes(data_structure) # 7 
+        self.get_num_variants_modifier(data_structure) # 4
+        self.get_num_variants_with_mutationtaster_annotation(data_structure) # 5
+        self.get_num_variants_non_synonymous(data_structure) # 3
         #print("Print all results here")
     
     
